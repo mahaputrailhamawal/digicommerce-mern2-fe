@@ -1,3 +1,4 @@
+import { useRef, useState } from "react"
 import { Button } from "../../../components/ui/button"
 import { Input } from "../../../components/ui/input"
 import { Select } from "../../../components/ui/select"
@@ -12,7 +13,24 @@ const CATEGORIES = [
 ];
 
 export const FormCreateProduct = () => {
+    const filesRef = useRef<HTMLInputElement>(null);
+    const downloadableFileRef = useRef<HTMLInputElement>(null);
     const { tag, tags, handleAddTag, handleRemoveTag, handleChangeTag} = useTag();
+    const [imagesPreview, setImagesPreview] = useState<string[]>([]);
+    const [downloadableFile, setDownloadableFile] = useState<string>('');
+
+    function handleAddImages(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files) {
+             const files = Array.from(e.target.files);
+             setImagesPreview(files.map(file => URL.createObjectURL(file)));
+        }
+    }
+
+    function handleDownloadableFile(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files) {
+             setDownloadableFile(e.target.files[0].name);
+        }
+    }
   return (
     <LayoutDashboard isCentered>
         <main>
@@ -23,10 +41,48 @@ export const FormCreateProduct = () => {
                         <Input placeholder="Product name"/>
                         <Textarea placeholder="Product description" rows={6}/>
                         <Select caption="Category" options={CATEGORIES}/>
-                        <Button variant="outline">Add Image</Button>
-                        <Button variant="outline">Add Downloadable Files</Button>
+                        <Input placeholder="Price"/>
                         <Input name="tag" placeholder="Tags" value={tag} onChange={handleChangeTag} onKeyUp={handleAddTag}/>
                         <ProductTagsRenderer tags={tags} handleRemoveTag={handleRemoveTag}/>
+                        <input 
+                            name="images" 
+                            ref={filesRef} 
+                            type="file" 
+                            accept=".png, .jpg, .jpeg" 
+                            multiple 
+                            hidden 
+                            onChange={handleAddImages}
+                        />
+                        <Button variant="outline" onClick={() => filesRef.current?.click()}>Add Images</Button>
+                        <div className="flex flex-wrap gap-2">
+                            {imagesPreview.map((image) => {
+                                return <img src={image} key={image} className="w-32 rounded-lg"/>
+                            })}
+                        </div>
+                        <input 
+                            name="downloadableFile" 
+                            ref={downloadableFileRef} 
+                            type="file" 
+                            accept=".pdf, .zip, .doc" 
+                            multiple 
+                            hidden 
+                            onChange={handleDownloadableFile}
+                        />
+                        <Button variant="outline" onClick={() => downloadableFileRef.current?.click()}>Add Downloadable Files</Button>
+                        {downloadableFile && (
+                            <div className="flex w-fit gap-2 text-sm items-center rounded-full border px-2.5 py-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                <path
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeWidth="1.5"
+                                    d="M7.918 17.807l7.89-7.553a2.253 2.253 0 000-3.284 2.503 2.503 0 00-3.43 0l-7.834 7.498a4.28 4.28 0 000 6.24c1.8 1.723 4.718 1.723 6.518 0l7.949-7.608c2.652-2.54 2.652-6.656 0-9.196-2.653-2.539-6.954-2.539-9.607 0L3 10.034"
+                                    ></path>
+                                </svg>
+                                <div>{downloadableFile}</div>
+                            </div>
+                        )}
                         <Button>Submit Product</Button>
                     </section>
                 </div>

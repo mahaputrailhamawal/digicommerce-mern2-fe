@@ -17,12 +17,16 @@ const buttonStyle = tv({
         },
         iconOnly: {
             true: 'p-2',
+        },
+        isFullWidth: {
+            true: 'w-full flex justify-center'
         }
     },
     defaultVariants: {
         variant: 'primary',
         size: 'medium',
         iconOnly: false,
+        isFullWidth: false
     },
 });
 

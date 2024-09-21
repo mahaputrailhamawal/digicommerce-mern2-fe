@@ -25,7 +25,7 @@ export const FormCreateProduct = () => {
                         <Select caption="Category" options={CATEGORIES}/>
                         <Button variant="outline">Add Image</Button>
                         <Button variant="outline">Add Downloadable Files</Button>
-                        <Input placeholder="Tags" value={tag} onChange={handleChangeTag} onKeyUp={handleAddTag}/>
+                        <Input name="tag" placeholder="Tags" value={tag} onChange={handleChangeTag} onKeyUp={handleAddTag}/>
                         <ProductTagsRenderer tags={tags} handleRemoveTag={handleRemoveTag}/>
                         <Button>Submit Product</Button>
                     </section>
@@ -38,7 +38,7 @@ export const FormCreateProduct = () => {
 
 const ProductTagsRenderer = ({tags, handleRemoveTag}: {tags: string[], handleRemoveTag: (index: number) => void}) => {
     return (
-        <div className="flex flex-wrap gap-2">
+        <div role="product-tags" className="flex flex-wrap gap-2">
             {tags.map((tag,index) => (
                 <div 
                     onClick={() => handleRemoveTag(index)}
